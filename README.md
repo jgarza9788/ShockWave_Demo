@@ -35,9 +35,11 @@ Table of Contents
 1. ShockWave.cs
 	* Speed,Radius,Amplitude,WaveSize
 	* Methods
+	* ShockWave_WorldSpace.cs
 2. Demo1
 3. Demo2
 4. Demo3
+5. Demo4
 
 
 
@@ -45,7 +47,7 @@ ShockWave.cs
 -------------------------------------
 ShockWave.cs is the main script that creates and manages the shockwaves. 
 
-####Speed,Radius,Amplitude,WaveSize
+###Speed,Radius,Amplitude,WaveSize
 these are the 4 values that we can adjust to change the look, and style of the shockwave.
 
 **Speed:**  
@@ -62,7 +64,7 @@ this is the thickness of the shockwave.
 
 ![Imgur](http://i.imgur.com/1gTOSQG.png?1)
 
-####Methods
+###Methods
 
 There are 12 methods that can be used to display a shockwave.
 
@@ -120,6 +122,11 @@ public void StartIt(Vector3 Position, bool IsScreenPosition, float Speed = 1f, A
 ~~~cs
 public void StartIt(GameObject Target, float Speed = 1f, AnimationCurve radiusOverTime =  null, AnimationCurve amplitudeOverTime = null , AnimationCurve waveSizeOverTime = null) {...}
 ~~~
+
+###ShockWave_WorldSpace.cs
+Is a script much like ShockWave.cs however it is used in the ShockWave(WorldSpace).prefab. 
+
+Please view Demo-Scene4 and read ShockWave_WorldSpace.cs for more info.
 
 
 Demo1 
@@ -192,3 +199,58 @@ Edit the values in "ShockWaveMaker" GameObject, Play the scene, then click aroun
     }
 ...    
 ~~~
+
+Demo4
+-------------------------------------
+In demo4 the projectiles are creating shockwaves on collision. These shockwaves are rendered on quads within the worldspace (not on the screen). These shockwaves can be customized by changing the values ShockWave(WorldSpace).prefab.
+
+The code below shows how these shockwaves can be created.
+
+~~~cs 
+    /// <summary>
+    /// Raises the collision enter event.
+    /// </summary>
+    /// <param name="collision">Collision.</param>
+    void OnCollisionEnter(Collision collision) 
+    {
+        //get the direction the projectile is moving
+        Vector3 dir = collision.contacts[0].point - gameObject.transform.position;
+
+        //create a Ray
+        Ray ray = new Ray(gameObject.transform.position,dir);
+
+        //the output value
+        RaycastHit hit;
+
+        //use the raycast
+        if (Physics.Raycast (ray,out hit, 100,mask)) 
+        {
+            //create a shockwave by creating an object from a prefab
+            GameObject obj = GameObject.Instantiate(prefab);
+
+            //move the shockwave to the correct location and rotation
+            obj.transform.rotation = Quaternion.FromToRotation (Vector3.forward, hit.normal);
+            obj.transform.position = hit.point;
+            obj.transform.position += obj.transform.forward * 0.1f;
+
+            //if you need an example of how to use delegates...
+            /*
+            obj.GetComponent<ShockWave_WorldSpace>().OnAnimationComplete += delegateExample.printName;
+            obj.GetComponent<ShockWave_WorldSpace>().OnAnimationComplete += delegateExample.printPosition;
+            obj.GetComponent<ShockWave_WorldSpace>().OnAnimationComplete += delegateExample.reset;
+            */
+        }
+
+        //make the particleSystem
+        GameObject.Instantiate(particleSystem,gameObject.transform.position,gameObject.transform.rotation);
+
+        //destory the projectile
+        Destroy(gameObject);
+    }
+...    
+~~~
+
+
+
+
+
