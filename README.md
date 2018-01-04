@@ -12,7 +12,7 @@ Questions, suggestions, help needed?
 Contact me at:  
 Email: jgarza9788@gmail.com  
 Cell: 1-818-251-0647  
-Contact Info: [justingarza.net/contact](http://justingarza.net/contact/)
+Contact Info: [justingarza.info/contact](http://justingarza.info/contact/)
   
 Description/Features
 -------------------------------------
@@ -40,6 +40,7 @@ Table of Contents
 3. Demo2
 4. Demo3
 5. Demo4
+6. Demo5
 
 
 
@@ -249,6 +250,34 @@ The code below shows how these shockwaves can be created.
     }
 ...    
 ~~~
+
+Demo5
+-------------------------------------
+In demo5 the Jump Demo! Spacebar makes the cube jump and you see the shockwave as an effect.
+
+The code below shows how the cube jumps and generates a  shockwaves.
+
+~~~cs
+// Update is called once per frame
+void Update () 
+{
+    if (Input.GetKeyDown(KeyCode.Space))
+    {
+        gameObject.GetComponent<Rigidbody>().AddForce(0f,jumpForce,0f);
+
+
+        //create a shockwave by creating an object from a prefab
+        GameObject obj = GameObject.Instantiate(prefab);
+
+        //move the shockwave to the correct location and rotation
+        //obj.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
+        //obj.transform.position = hit.point;
+        obj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        obj.transform.position = transform.position + swPositionOffset;
+    }
+}
+~~~
+
 
 
 
