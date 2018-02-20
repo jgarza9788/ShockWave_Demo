@@ -41,6 +41,7 @@ Table of Contents
 4. Demo3
 5. Demo4
 6. Demo5
+7. Demo6
 
 
 
@@ -253,31 +254,71 @@ The code below shows how these shockwaves can be created.
 
 Demo5
 -------------------------------------
-In demo5 the Jump Demo! Spacebar makes the cube jump and you see the shockwave as an effect.
-
-The code below shows how the cube jumps and generates a  shockwaves.
+In demo5 is a jumping demo, i made this when i saw rocket league use a similar effect when the cars jump :)
 
 ~~~cs
-// Update is called once per frame
-void Update () 
-{
-    if (Input.GetKeyDown(KeyCode.Space))
+/*
+JumpScript.cs
+Used to make the block jump!
+*/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class JumpScript : MonoBehaviour {
+
+    public float jumpForce;
+    public GameObject prefab;
+    public Vector3 swPositionOffset;
+
+	// Update is called once per frame
+	void Update () 
     {
-        gameObject.GetComponent<Rigidbody>().AddForce(0f,jumpForce,0f);
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            gameObject.GetComponent<Rigidbody>().AddForce(0f,jumpForce,0f);
 
 
-        //create a shockwave by creating an object from a prefab
-        GameObject obj = GameObject.Instantiate(prefab);
+            //create a shockwave by creating an object from a prefab
+            GameObject obj = GameObject.Instantiate(prefab);
 
-        //move the shockwave to the correct location and rotation
-        //obj.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
-        //obj.transform.position = hit.point;
-        obj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-        obj.transform.position = transform.position + swPositionOffset;
-    }
+            //move the shockwave to the correct location and rotation
+            //obj.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
+            //obj.transform.position = hit.point;
+            obj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            obj.transform.position = transform.position + swPositionOffset;
+        }
+	}
 }
-~~~
+~~~ 
 
+Demo6
+-------------------------------------
+In demo6 was recommended by a customer.  
+Shows that you can decide switch camera to render this effect on. 
+
+~~~cs
+void Update () 
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (RevSW)
+            {
+                //both of these are valid...
+                //ShockWave.Get().ReverseIt(Input.mousePosition,true,Speed,MaxRadius, Amp ,WS); //if you want to use the main camera you don't need to specify a camera
+                ShockWave.Get(thisCamera).ReverseIt(Input.mousePosition, true, Speed, MaxRadius, Amp, WS);
+
+            }
+            else
+            {
+                //both of these are valid...
+                //ShockWave.Get().StartIt(Input.mousePosition,true,Speed,MaxRadius, Amp, WS); //if you want to use the main camera you don't need to specify a camera
+                ShockWave.Get(thisCamera).StartIt(Input.mousePosition, true, Speed, MaxRadius, Amp, WS);
+            }
+        }
+	}
+~~~ 
 
 
 
